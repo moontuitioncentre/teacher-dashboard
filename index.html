@@ -244,26 +244,52 @@
     const allBtns = [availBtn, occBtn, inactiveBtn, doneBtn];
 
     let vipStudents = JSON.parse(localStorage.getItem('vipStudents')) || [];
+renderVIPs(); // ✅ 只用于“先显示”
     let ws;
     let currentVIPName = null; // 当前点击的VIP名字
     let fromVIPList = false; // 标记是否从下方点击来的名字
+    let isRemoteUpdate = false;
 
     function connectWS() {
       ws = new WebSocket(WS_URL);
-      ws.onopen = () => ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+      ws.onopen = () => {
+  ws.send(JSON.stringify({ type: "getVIP" }));
+  ws.send(JSON.stringify({ type: "getCurrentStudent" }));
+};
       ws.onmessage = (evt) => {
-        try {
-          const msg = JSON.parse(evt.data);
-          if (msg.type === "syncVIP" && Array.isArray(msg.vipStudents)) {
-            vipStudents = msg.vipStudents;
-            localStorage.setItem("vipStudents", JSON.stringify(vipStudents));
-            renderVIPs();
-          }
-        } catch {}
-      };
+  try {
+    const msg = JSON.parse(evt.data);
+
+    // ✅ 当前学生名字（全局）
+    if (msg.type === "syncCurrentStudent") {
+  isRemoteUpdate = true;
+  studentInput.value = msg.student || "";
+  isRemoteUpdate = false;
+}
+
+    // ✅ 你原本的 VIP（保留）
+    if (msg.type === "syncVIP" && Array.isArray(msg.vipStudents)) {
+      vipStudents = msg.vipStudents;
+      localStorage.setItem("vipStudents", JSON.stringify(vipStudents));
+      renderVIPs();
+    }
+  } catch {}
+};
       ws.onclose = () => setTimeout(connectWS, 2000);
     }
     connectWS();
+
+/* ✅【就在这里加】同步 studentInput 的监听 */
+studentInput.addEventListener("input", () => {
+  if (isRemoteUpdate) return; // ❗关键：防回环
+
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({
+      type: "setCurrentStudent",
+      student: studentInput.value
+    }));
+  }
+});
 
     function updateStatus(status, btn) {
       const teacher = teacherSelect.value;
@@ -364,7 +390,6 @@
       }
     };
 
-    renderVIPs();
   </script>
 </body>
 </html>
