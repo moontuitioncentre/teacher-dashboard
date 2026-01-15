@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moon Tuition Centre-Teacher</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans', Arial;
+      background: #1a202c;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease;
+    }
+
+    .card {
+      background: #2d3748;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 420px;
+      margin: 10px auto;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      font-size: 15px;
+      overflow-y: auto;
+      max-height: 95vh;
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 14px;
+      color: #4fd1c5;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #63b3ed;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #4a5568;
+      font-size: 15px;
+      background-color: #2d3748;
+      color: #e2e8f0;
+      box-sizing: border-box;
+    }
+
+    select:focus, input:focus {
+      border-color: #63b3ed;
+      outline: none;
+    }
+
+    .status-btns {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 80px;
+      height: 45px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn.avail { background-color: #48bb78; color: white; }
+    .btn.occ { background-color: #f56565; color: white; }
+    .btn.inactive { background-color: #a0aec0; color: #1a202c; }
+    .btn.done { background-color: #805ad5; color: white; }
+
+    .btn:hover { opacity: 0.9; transform: scale(1.03); }
+    .btn.active { box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); border-color: #fff; transform: scale(1.05); }
+
+    .info {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #e2e8f0;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #a0aec0;
+      display: block;
+      text-align: center;
+    }
+
+    .vip-section {
+      margin-top: 14px;
+    }
+
+    .vip-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .vip-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #3b82f6;
+      background-color: #1e293b;
+      color: #e2e8f0;
+      text-align: center;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .vip-input::placeholder {
+      color: #94a3b8;
+      opacity: 0.8;
+    }
+
+    .vip-input:focus {
+      border-color: #63b3ed;
+      background-color: #2d3748;
+      outline: none;
+      box-shadow: 0 0 10px rgba(99, 179, 237, 0.4);
+    }
+
+    .vip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      justify-content: center;
+    }
+
+    .vip-tag {
+      background-color: #38b2ac;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 18px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .vip-tag:hover {
+      background-color: #319795;
+      transform: scale(1.05);
+    }
+
+    .vip-remove {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .vip-remove:hover {
+      color: #fbd38d;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌕 MOON TUITION CENTRE 🌕</h1>
+
+    <label>选择房间 • Select Room</label>
+    <select id="roomSelect">
+      <option value="Room 1">Room 1</option>
+      <option value="Room 5">Room 5</option>
+      <option value="Room 7">Room 7</option>
+    </select>
+
+    <label>选择老师 • Select Teacher</label>
+    <select id="teacherSelect">
+      <option value="low">Teacher Low</option>
+      <option value="ivy">Teacher Ivy</option>
+      <option value="loi">Teacher Loi</option>
+      <option value="jill">Teacher Jill</option>
+    </select>
+
+    <label>学生名字 • Student Name</label>
+    <input type="text" id="studentInput" placeholder="Enter student's name" />
+
+    <label>选择状态 • Select Status</label>
+    <div class="status-btns">
+      <button id="availBtn" class="btn avail">Available</button>
+      <button id="occBtn" class="btn occ">Occupied</button>
+      <button id="inactiveBtn" class="btn inactive">Inactive</button>
+      <button id="doneBtn" class="btn done">Done</button>
+    </div>
+
+    <div class="info">
+      <div class="small">最后更新 • Last updated: <span id="lastUpdated">-</span></div>
+      <div class="small">提示：选择老师、房间、学生后更新状态，系统会自动记录时间。</div>
+    </div>
+
+    <div class="vip-section">
+      <div class="vip-input-wrapper">
+        <input id="vipInput" class="vip-input" placeholder="Type student name and press Enter..." />
+      </div>
+      <div id="vipList" class="vip-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const WS_URL = "wss://moon-realtime-server.onrender.com";
+    const teacherSelect = document.getElementById('teacherSelect');
+    const roomSelect = document.getElementById('roomSelect');
+    const studentInput = document.getElementById('studentInput');
+    const lastUpdated = document.getElementById('lastUpdated');
+    const body = document.body;
+    const availBtn = document.getElementById('availBtn');
+    const occBtn = document.getElementById('occBtn');
+    const inactiveBtn = document.getElementById('inactiveBtn');
+    const doneBtn = document.getElementById('doneBtn');
+    const vipInput = document.getElementById('vipInput');
+    const vipList = document.getElementById('vipList');
+    const allBtns = [availBtn, occBtn, inactiveBtn, doneBtn];
+
+    let vipStudents = JSON.parse(localStorage.getItem('vipStudents')) || [];
+    let ws;
+    let currentVIPName = null; // 当前点击的VIP名字
+    let fromVIPList = false; // 标记是否从下方点击来的名字
+
+    function connectWS() {
+      ws = new WebSocket(WS_URL);
+      ws.onopen = () => ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+      ws.onmessage = (evt) => {
+        try {
+          const msg = JSON.parse(evt.data);
+          if (msg.type === "syncVIP" && Array.isArray(msg.vipStudents)) {
+            vipStudents = msg.vipStudents;
+            localStorage.setItem("vipStudents", JSON.stringify(vipStudents));
+            renderVIPs();
+          }
+        } catch {}
+      };
+      ws.onclose = () => setTimeout(connectWS, 2000);
+    }
+    connectWS();
+
+    function updateStatus(status, btn) {
+      const teacher = teacherSelect.value;
+      const room = roomSelect.value;
+      const student = studentInput.value || '-';
+      const time = new Date().toLocaleString();
+
+      if (ws && ws.readyState === WebSocket.OPEN)
+        ws.send(JSON.stringify({ teacher, room, student, status, time }));
+
+      lastUpdated.textContent = time;
+      body.style.backgroundColor =
+        status === 'Available' ? '#48bb78' :
+        status === 'Occupied' ? '#f56565' :
+        status === 'Done' ? '#805ad5' : '#1a202c';
+
+      allBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    availBtn.onclick = () => updateStatus('Available', availBtn);
+    occBtn.onclick = () => updateStatus('Occupied', occBtn);
+    inactiveBtn.onclick = () => updateStatus('Inactive', inactiveBtn);
+
+    doneBtn.onclick = () => {
+      const name = studentInput.value.trim();
+      if (!name) return;
+      const index = vipStudents.indexOf(name);
+      if (index !== -1) {
+        const [student] = vipStudents.splice(index, 1);
+        vipStudents.push(student);
+      } else vipStudents.push(name);
+      localStorage.setItem('vipStudents', JSON.stringify(vipStudents));
+      renderVIPs();
+      if (ws && ws.readyState === WebSocket.OPEN)
+        ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+      studentInput.value = '';
+      updateStatus('Done', doneBtn);
+    };
+
+    // ✅ 监听老师手动删除名字
+    studentInput.addEventListener('keydown', (e) => {
+      if (fromVIPList && (e.key === 'Backspace' || e.key === 'Delete') && studentInput.value.trim().length <= 1) {
+        // 老师删完时自动回到原处
+        if (currentVIPName) {
+          vipStudents.push(currentVIPName);
+          localStorage.setItem('vipStudents', JSON.stringify(vipStudents));
+          renderVIPs();
+          if (ws && ws.readyState === WebSocket.OPEN)
+            ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+          currentVIPName = null;
+          fromVIPList = false;
+        }
+      }
+    });
+
+    function renderVIPs() {
+      vipList.innerHTML = '';
+      vipStudents.forEach((name, index) => {
+        const tag = document.createElement('div');
+        tag.className = 'vip-tag';
+        tag.innerHTML = `${name} <button class="vip-remove" data-index="${index}">✕</button>`;
+        tag.onclick = (e) => {
+          if (!e.target.classList.contains('vip-remove')) {
+            studentInput.value = name;
+            currentVIPName = name;
+            fromVIPList = true;
+            vipStudents.splice(index, 1);
+            localStorage.setItem('vipStudents', JSON.stringify(vipStudents));
+            renderVIPs();
+            if (ws && ws.readyState === WebSocket.OPEN)
+              ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+          }
+        };
+        vipList.appendChild(tag);
+      });
+    }
+
+    vipInput.onkeydown = (e) => {
+      if (e.key === 'Enter' && vipInput.value.trim()) {
+        vipStudents.push(vipInput.value.trim());
+        vipInput.value = '';
+        localStorage.setItem('vipStudents', JSON.stringify(vipStudents));
+        renderVIPs();
+        if (ws && ws.readyState === WebSocket.OPEN)
+          ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+      }
+    };
+
+    vipList.onclick = (e) => {
+      if (e.target.classList.contains('vip-remove')) {
+        const index = parseInt(e.target.dataset.index);
+        vipStudents.splice(index, 1);
+        localStorage.setItem('vipStudents', JSON.stringify(vipStudents));
+        renderVIPs();
+        if (ws && ws.readyState === WebSocket.OPEN)
+          ws.send(JSON.stringify({ type: "syncVIP", vipStudents }));
+      }
+    };
+
+    renderVIPs();
+  </script>
+</body>
+</html>
