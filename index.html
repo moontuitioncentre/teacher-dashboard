@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moon Tuition Centre-Teacher</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans', Arial;
+      background: #1a202c;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease;
+    }
+
+    .card {
+      background: #2d3748;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 420px;
+      margin: 10px auto;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      font-size: 15px;
+      overflow-y: auto;
+      max-height: 95vh;
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 14px;
+      color: #4fd1c5;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #63b3ed;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #4a5568;
+      font-size: 15px;
+      background-color: #2d3748;
+      color: #e2e8f0;
+      box-sizing: border-box;
+    }
+
+    select:focus, input:focus {
+      border-color: #63b3ed;
+      outline: none;
+    }
+
+    .status-btns {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 80px;
+      height: 45px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn.avail { background-color: #48bb78; color: white; }
+    .btn.occ { background-color: #f56565; color: white; }
+    .btn.inactive { background-color: #a0aec0; color: #1a202c; }
+    .btn.done { background-color: #805ad5; color: white; }
+    .btn.lunch { background-color: #f6ad55; color: white; }
+.btn.homework { background-color: #ff58ae; color: white; }
+.btn.dictation { background-color: #4299e1; color: white; }
+
+    .btn:hover { opacity: 0.9; transform: scale(1.03); }
+    .btn.active { box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); border-color: #fff; transform: scale(1.05); }
+
+    .info {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #e2e8f0;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #a0aec0;
+      display: block;
+      text-align: center;
+    }
+
+    .vip-section {
+      margin-top: 14px;
+    }
+
+    .vip-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .vip-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #3b82f6;
+      background-color: #1e293b;
+      color: #e2e8f0;
+      text-align: center;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .vip-input::placeholder {
+      color: #94a3b8;
+      opacity: 0.8;
+    }
+
+    .vip-input:focus {
+      border-color: #63b3ed;
+      background-color: #2d3748;
+      outline: none;
+      box-shadow: 0 0 10px rgba(99, 179, 237, 0.4);
+    }
+
+    .vip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      justify-content: center;
+    }
+
+    .vip-tag {
+  background-color: #a0aec0; /* 青色背景 */
+  color: #000000; /* 白色文字 */
+  padding: 5px 8px;  /* 减少左右的内边距，使标签更紧凑 */
+  border-radius: 12px;  /* 较小的圆角 */
+  font-size: 14px;
+  display: inline-flex;  /* 改为内联显示，使标签并排显示 */
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.vip-tag:hover {
+  background-color: #319795; /* 鼠标悬停时的背景色 */
+  transform: scale(1.05); /* 鼠标悬停时放大 */
+}
+
+.vip-remove {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.vip-tag.available { 
+    background-color: #48bb78 !important; 
+  }
+
+  .vip-tag.occupied { 
+    background-color: #f56565 !important; 
+  }
+
+  .vip-tag.inactive { 
+    background-color: #a0aec0 !important; 
+    color: #1a202c; 
+  }
+
+  .vip-tag.lunch { background-color: #f6ad55 !important; }
+.vip-tag.homework { background-color: #ff58ae !important; }
+.vip-tag.dictation { background-color: #4299e1 !important; }
+
+.vip-tag.having-lunch {
+  background-color: #f6ad55 !important;
+}
+
+.vip-tag.writing-homework-list {
+  background-color: #ff58ae !important;
+}
+
+.vip-tag.read-copy-spelling {
+  background-color: #4299e1 !important;
+}
+
+  .vip-tag.done {
+  background: linear-gradient(
+    90deg,
+    #a0aec0 0%,
+    #a0aec0 60%,
+    #805ad5 50%,
+    #805ad5 100%
+  ) !important;
+  color: #1a202c;
+}
+
+.vip-remove:hover {
+  color: #fbd38d; /* 删除按钮的颜色 */
+}
+
+.teacher-board {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.teacher-card {
+  background: #edf2f7;
+  color: #1a202c;
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 140px;
+  text-align: center;
+}
+
+.teacher-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.teacher-students {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.teacher-students .vip-tag {
+  justify-content: center;
+}
+
+.school-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 一行2个 */
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.school-card {
+  background: #e5e7eb;
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.school-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.school-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111827;
+  font-size: 14px;
+}
+
+.school-students {
+  font-size: 13px;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.student-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #a0aec0, #a0aec0);
+  color: rgb(0, 0, 0);
+  padding: 6px 12px;
+  margin: 4px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.student-tag:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.school-students {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.student-tag.available {
+  background: #48bb78 !important;
+}
+
+.student-tag.occupied {
+  background: #f56565 !important;
+}
+
+.student-tag.inactive {
+  background: #a0aec0 !important;
+  color: #1a202c;
+}
+
+.student-tag.lunch {
+  background: #f6ad55 !important;
+}
+
+.student-tag.homework {
+  background: #ff58ae !important;
+}
+
+.student-tag.dictation {
+  background: #4299e1 !important;
+}
+
+.student-tag.done {
+  background: linear-gradient(
+    90deg,
+    #a0aec0 0%,
+    #a0aec0 60%,
+    #805ad5 50%,
+    #805ad5 100%
+  ) !important;
+}
+
+.school-card.ready {
+  background: #f6ad55; /* 橙色 */
+}
+
+.modal-btn {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.modal-btn.blue { background: #4299e1; color: white; }
+.modal-btn.yellow { background: #f6ad55; color: white; }
+.modal-btn.green { background: #48bb78; color: white; }
+.modal-btn.red { background: #f56565; color: white; }
+
+.progress-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 80%;
+  margin: 14px auto;   /* ⭐关键在这里 */
+
+  padding: 12px;
+
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: rgb(0, 0, 0);
+
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+  </style>
+
+<script type="module">
+  /* 1️⃣ imports 一定在最上面 */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+import { 
+  getFirestore, 
+  collection, 
+  onSnapshot, 
+  query, 
+  where, 
+  orderBy,
+  getDocs   // 👈 直接加在这里（推荐这样写）
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  /* 2️⃣ module 内的全局状态 */
+  const hiddenStudents = new Set();
+
+  window.currentTuitionDocId = null;
+
+  /* 3️⃣ Firebase 初始化 */
+  const firebaseConfig = {
+    apiKey: "AIzaSyDzJ-EhY9Rc9EpjgsOXOnM4t926DpV1Huk",
+  authDomain: "moontuition.firebaseapp.com",
+  databaseURL: "https://moontuition-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "moontuition",
+  storageBucket: "moontuition.firebasestorage.app",
+  messagingSenderId: "778272260665",
+  appId: "1:778272260665:web:9c2178235c0edbf72583e8",
+  measurementId: "G-9LL9PFKXN1"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+window.db = db;
+window.updateDoc = updateDoc;
+window.doc = doc;
+
+// 🔥 在这里加 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+window.studentMap = {};
+
+async function loadStudents() {
+  const snapshot = await getDocs(collection(db, "students"));
+  
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    window.studentMap[data.name.trim()] = data.className;
+  });
+
+  console.log("Student map loaded:", studentMap);
+}
+
+  /* 4️⃣ 等 DOM 好了再绑事件（关键） */
+  window.addEventListener('DOMContentLoaded', () => {
+  const studentListEl = document.getElementById('studentList');
+  const tuitionListEl = document.getElementById('tuitionStudentList');
+
+  const revisionListEl = document.getElementById('revisionStudentList');
+
+  // 🔥🔥🔥 在这里加 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  const basicListEl = document.getElementById('basicStudentList');
+
+  basicListEl.addEventListener('click', async (e) => {
+  if (!e.target.classList.contains('vip-remove')) return;
+
+  e.stopPropagation();
+
+  const tag = e.target.closest('.vip-tag');
+  if (!tag) return;
+
+  const docId = tag.dataset.id;
+  if (!docId) return;
+
+  const ok = confirm('Remove this student from today list ?');
+  if (!ok) return;
+
+  await updateDoc(doc(db, 'attendance', docId), {
+  type: 'revision',
+  status: 'Inactive',
+  forceBottomAt: new Date()
+});
+});
+  // 🔥🔥🔥 到这里 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+revisionListEl.addEventListener('click', async (e) => {
+  if (!e.target.classList.contains('vip-remove')) return;
+
+  e.stopPropagation();
+
+  const tag = e.target.closest('.vip-tag');
+  if (!tag) return;
+
+  const docId = tag.dataset.id;
+  if (!docId) return;
+
+  const ok = confirm('Move student to tuition ?');
+  if (!ok) return;
+
+  await updateDoc(doc(db, 'attendance', docId), {
+    type: 'tuition',
+    status: 'Inactive',
+    returnedToTuitionAt: new Date(),
+    forceBottomAt: new Date()
+  });
+});
+
+  // 🔴 Homework 删除（= homeworkDone）
+  studentListEl.addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('vip-remove')) return;
+
+    e.stopPropagation();
+
+    const tag = e.target.closest('.vip-tag');
+    if (!tag) return;
+
+    const docId = tag.dataset.id;
+    if (!docId) return;
+
+    const ok = confirm('Remove this student from today list ?');
+    if (!ok) return;
+
+    await updateDoc(doc(db, 'attendance', docId), {
+  homeworkDone: true,
+  type: 'basic',              // 🔥 加这一行（核心）
+  status: 'Inactive',
+  forceBottomAt: new Date()
+});
+  });
+
+  // 🔵 Tuition 删除（= hidden）
+  tuitionListEl.addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('vip-remove')) return;
+
+    e.stopPropagation();
+
+    const tag = e.target.closest('.vip-tag');
+    if (!tag) return;
+
+    const docId = tag.dataset.id;
+    if (!docId) return;
+
+    const ok = confirm('Remove this student from today list');
+    if (!ok) return;
+
+    await updateDoc(doc(db, 'attendance', docId), {
+  tuitionDone: true,
+  teacher: null   // 🔥🔥🔥 加这一行
+});
+  });
+});
+
+  /* 5️⃣ 你的 updateStudentList */
+  function updateHomeworkList(list) {
+  const el = document.getElementById('studentList');
+  el.innerHTML = '';
+
+  list.forEach(item => {
+    const tag = document.createElement('div');
+    tag.className = 'vip-tag';
+    tag.dataset.id = item.id;
+
+    // ✅ 如果有状态，加上颜色
+    if (item.status) {
+      tag.classList.add(
+  item.status
+    .toLowerCase()
+    .replace(/[\/\s]+/g, '-')
+);
+    }
+
+    tag.innerHTML = `
+      ${item.name}
+      <button class="vip-remove">✕</button>
+    `;
+
+    // ✅ 点击学生名字
+    tag.addEventListener('click', (e) => {
+      if (e.target.classList.contains('vip-remove')) return;
+
+      // 🔥🔥🔥 加这里（最关键）
+  window.selectionMode = 'single';
+  window.currentSelectedStudents = [];
+
+      studentInput.value = item.name;
+      window.currentTuitionDocId = item.id;
+
+      // 清除所有选中
+      document
+        .querySelectorAll('#studentList .vip-tag')
+        .forEach(el => el.classList.remove('selected'));
+
+      document
+        .querySelectorAll('#tuitionStudentList .vip-tag')
+        .forEach(el => el.classList.remove('selected'));
+
+      tag.classList.add('selected');
+    });
+
+    el.appendChild(tag);
+  });
+}
+
+// 🔥🔥🔥 就在这里加 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+function updateBasicList(list) {
+  const el = document.getElementById('basicStudentList');
+  if (!el) return;
+
+  el.innerHTML = '';
+
+  list.forEach(item => {
+    const tag = document.createElement('div');
+    tag.className = 'vip-tag';
+    tag.dataset.id = item.id;
+
+    if (item.status) {
+      tag.classList.add(
+        item.status.toLowerCase().replace(/[\/\s]+/g, '-')
+      );
+    }
+
+    tag.innerHTML = `
+      ${item.name}
+      <button class="vip-remove">✕</button>
+    `;
+
+    tag.addEventListener('click', (e) => {
+      if (e.target.classList.contains('vip-remove')) return;
+
+      // 🔥🔥🔥 加这里（最关键）
+  window.selectionMode = 'single';
+  window.currentSelectedStudents = [];
+
+      studentInput.value = item.name;
+      window.currentTuitionDocId = item.id;
+
+      document
+        .querySelectorAll('.vip-tag')
+        .forEach(el => el.classList.remove('selected'));
+
+      tag.classList.add('selected');
+    });
+
+    el.appendChild(tag);
+  });
+}
+// 🔥🔥🔥 到这里 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+function updateRevisionList(list) {
+  const el = document.getElementById('revisionStudentList');
+  if (!el) return;
+
+  el.innerHTML = '';
+
+  list.forEach(item => {
+    const tag = document.createElement('div');
+    tag.className = 'vip-tag';
+    tag.dataset.id = item.id;
+
+    if (item.status) {
+      tag.classList.add(
+        item.status.toLowerCase().replace(/[\/\s]+/g, '-')
+      );
+    }
+
+    tag.innerHTML = `
+      ${item.name}
+      <button class="vip-remove">✕</button>
+    `;
+
+    tag.addEventListener('click', (e) => {
+      if (e.target.classList.contains('vip-remove')) return;
+
+      // 🔥🔥🔥 加这里（最关键）
+  window.selectionMode = 'single';
+  window.currentSelectedStudents = [];
+
+      studentInput.value = item.name;
+      window.currentTuitionDocId = item.id;
+
+      document
+        .querySelectorAll('.vip-tag')
+        .forEach(el => el.classList.remove('selected'));
+
+      tag.classList.add('selected');
+    });
+
+    el.appendChild(tag);
+  });
+}
+
+function updateTuitionList(list) {
+  const el = document.getElementById('tuitionStudentList');
+  el.innerHTML = '';  // 清空当前列表
+
+  list.forEach(item => {
+    const tag = document.createElement('div');
+    tag.className = 'vip-tag';
+    tag.dataset.id = item.id;
+    
+    // 检查状态并应用样式
+    if (item.status) {
+      tag.classList.add(
+  item.status
+    .toLowerCase()
+    .replace(/[\/\s]+/g, '-')
+);
+    }
+
+    tag.innerHTML = `
+      ${item.name}
+      <button class="vip-remove">✕</button>
+    `;
+
+    // 为标签添加事件监听器
+    tag.addEventListener('click', (e) => {
+      if (e.target.classList.contains('vip-remove')) return;
+
+      // 🔥🔥🔥 加这里（最关键）
+  window.selectionMode = 'single';
+  window.currentSelectedStudents = [];
+
+      // 选择当前学生并更新状态
+      studentInput.value = item.name;
+      currentTuitionDocId = item.id;
+
+      document
+        .querySelectorAll('#tuitionStudentList .vip-tag')
+        .forEach(el => el.classList.remove('selected'));
+
+      tag.classList.add('selected');
+    });
+
+    // 将标签添加到列表
+    el.appendChild(tag);
+  });
+}
+
+  (async () => {
+  // 确保加载学生资料，等数据加载完成
+  await loadStudents();
+
+  // 然后再开始监听数据库
+  onSnapshot(
+    query(
+      collection(db, 'attendance'),
+      where('timestamp', '>=', new Date(new Date().toDateString())),
+      orderBy('timestamp', 'desc')
+    ),
+    snapshot => {
+      const raw = snapshot.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(item => item.hidden !== true);
+
+      // 使用最新记录去重
+      const map = new Map();
+
+      raw.forEach(item => {
+        const key = item.name;
+        if (!key) return;
+
+        if (!map.has(key)) {
+          map.set(key, item);
+        } else {
+          const existing = map.get(key);
+          const t1 = existing.timestamp?.toDate?.() || new Date(0);
+          const t2 = item.timestamp?.toDate?.() || new Date(0);
+
+          if (t2 > t1) {
+            map.set(key, item);
+          }
+        }
+      });
+
+      const all = Array.from(map.values());
+
+// 🔥 建立 name -> docId map
+window.nameToDocId = {};
+
+all.forEach(item => {
+  if (item.name && item.id) {
+    window.nameToDocId[item.name.trim()] = item.id;
+  }
+});
+
+
+// 🔥🔥🔥 就是在这里加 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+const teacherMap = {};
+
+const hideStatuses = [
+  'Inactive',
+  'Having Lunch',
+  'Writing Homework List',
+  'Read / Copy / Spelling',
+  'Done'
+];
+
+all.forEach(item => {
+  if (!item.teacher || hideStatuses.includes(item.status)) return;
+
+  if (!teacherMap[item.teacher]) {
+    teacherMap[item.teacher] = [];
+  }
+
+  teacherMap[item.teacher].push({
+    name: item.name,
+    status: item.status
+  });
+});
+
+// 覆盖本地数据
+teacherCurrentStudent = teacherMap;
+
+// 重新渲染
+renderTeacherStatus();
+// 🔥🔥🔥 到这里结束 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+// 你原本的代码继续 ↓↓↓↓↓
+const homeworkList = all
+        .filter(item =>
+          (item.type === "homework" || item.type === "both" || !item.type) &&
+          item.homeworkDone !== true &&
+          item.tuitionDone !== true
+        )
+        .sort((a, b) => {
+          const f1 = a.forceBottomAt?.toDate?.() || null;
+          const f2 = b.forceBottomAt?.toDate?.() || null;
+
+          if (f1 && !f2) return 1;
+          if (!f1 && f2) return -1;
+
+          if (f1 && f2) return f1 - f2;
+
+          const t1 = a.timestamp?.toDate?.() || new Date(0);
+          const t2 = b.timestamp?.toDate?.() || new Date(0);
+          return t1 - t2;
+        });
+
+        // 🔥🔥🔥 就加在这里 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+const basicList = all
+  .filter(item =>
+    item.type === "basic" &&
+    item.tuitionDone !== true
+  )
+  .sort((a, b) => {
+    const t1 = a.forceBottomAt?.toDate?.() || new Date(0);
+    const t2 = b.forceBottomAt?.toDate?.() || new Date(0);
+    return t1 - t2;
+  });
+// 🔥🔥🔥 到这里 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+const revisionList = all
+  .filter(item =>
+    item.type === "revision" &&
+    item.tuitionDone !== true
+  )
+  .sort((a, b) => {
+    const t1 = a.forceBottomAt?.toDate?.() || new Date(0);
+    const t2 = b.forceBottomAt?.toDate?.() || new Date(0);
+    return t1 - t2;
+  });
+
+const homeworkNames = new Set(homeworkList.map(item => item.name));
+
+      const tuitionList = all
+  .filter(item =>
+    (item.type === "tuition" || item.type === "both" || item.homeworkDone === true) &&
+    item.type !== "basic" &&
+    item.type !== "revision" &&   // 🔥 防止 basic 混进去
+    !homeworkNames.has(item.name) &&
+    item.tuitionDone !== true
+  )
+        .sort((a, b) => {
+          const f1 = a.forceBottomAt?.toDate?.() || null;
+          const f2 = b.forceBottomAt?.toDate?.() || null;
+
+          if (f1 && !f2) return 1;
+          if (!f1 && f2) return -1;
+
+          if (f1 && f2) return f1 - f2;
+
+          const t1 = a.returnedToTuitionAt?.toDate?.() || new Date(0);
+          const t2 = b.returnedToTuitionAt?.toDate?.() || new Date(0);
+          return t1 - t2;
+        });
+
+      // 更新各个列表的显示
+      updateHomeworkList(homeworkList);
+updateBasicList(basicList);   // 🔥 新加
+updateRevisionList(revisionList);
+      updateTuitionList(tuitionList);
+      
+      window.currentTuitionNames = new Set(
+  tuitionList.map(item => item.name)
+);
+      const sortedAll = [...all].sort((a, b) => {
+  const f1 = a.forceBottomAt?.toDate?.() || null;
+  const f2 = b.forceBottomAt?.toDate?.() || null;
+
+  if (f1 && !f2) return 1;
+  if (!f1 && f2) return -1;
+  if (f1 && f2) return f1 - f2;
+
+  const t1 = a.timestamp?.toDate?.() || new Date(0);
+  const t2 = b.timestamp?.toDate?.() || new Date(0);
+
+  return t1 - t2;
+});
+
+renderSchoolList(sortedAll);
+    }
+  );
+})();
+
+function selectStudent(name, el) {
+  const input = document.getElementById("studentInput");
+
+  if (!input) return;
+
+  // ✅ 显示名字
+  input.value = name;
+
+  // ✅ 切换成单人模式
+  window.selectionMode = 'single';
+
+  // ✅ 清掉批量选择
+  window.currentSelectedStudents = [];
+
+  // ✅ 设置当前 docId
+  const docId = window.nameToDocId?.[name.trim()];
+  window.currentTuitionDocId = docId || null;
+
+  // 🔥🔥🔥 清掉所有选中（不只是 school）
+  document.querySelectorAll(".student-tag, .vip-tag").forEach(item => {
+    item.classList.remove("selected");
+  });
+
+  // ✅ 只高亮当前点击的
+  if (el) {
+    el.classList.add("selected");
+  }
+}
+
+// 🔥 关键这一行
+window.selectStudent = selectStudent;
+
+</script>
+</head>
+<body>
+  <div class="card">
+    <h1>🌕 MOON TUITION CENTRE 🌕</h1>
+
+    <label>选择房间 • Select Room</label>
+    <select id="roomSelect">
+      <option value="Room 1">Room 1</option>
+      <option value="Room 2">Room 2</option>
+      <option value="Room 3">Room 3</option>
+      <option value="Room 7">Room 7</option>
+      <option value="Office">Office</option>
+    </select>
+
+    <label>选择老师 • Select Teacher</label>
+    <select id="teacherSelect">
+      <option value="low">Teacher Low</option>
+      <option value="ivy">Teacher Ivy</option>
+      <option value="nanas">Teacher Nanas</option>
+      <option value="yong">Teacher Yong</option>
+      <option value="jill">Teacher Jill</option>
+      <option value="adam">Teacher Adam</option>
+      <option value="moon">Teacher Moon</option>
+    </select>
+
+    <label>学生名字 • Student Name</label>
+    <input
+  type="text"
+  id="studentInput"
+  placeholder=""
+  readonly
+  tabindex="-1"
+/>
+
+    <label>选择状态 • Select Status</label>
+    <div class="status-btns">
+  <button id="availBtn" class="btn avail">Available</button>
+  <button id="occBtn" class="btn occ">Occupied</button>
+  <button id="inactiveBtn" class="btn inactive">Inactive</button>
+
+  <button id="lunchBtn" class="btn lunch">Having Lunch</button>
+  <button id="homeworkBtn" class="btn homework">Writing Homework List</button>
+  <button id="dictationBtn" class="btn dictation">Read / Copy / Spelling</button>
+
+  <button id="doneBtn" class="btn done">Done</button>
+</div>
+
+    <div id="teacherBoard" class="teacher-board"></div>
+
+    <!-- 🔴 在这里加 -->
+  <div class="vip-input-wrapper" style="margin-top:10px;">
+  <div class="vip-input" style="cursor: default;">
+    学校功课 • Homework
+    <div class="small">⚠️ Please check the WhatsApp group before Teaching ⚠️</div>
+  </div>
+</div>
+
+<div
+  id="studentList"
+  class="vip-list"
+  style="margin-top:8px;"
+></div>
+
+<div class="vip-input-wrapper" style="margin-top:12px;">
+  <div class="vip-input" style="cursor: default;">
+    基础 • Basic
+  </div>
+</div>
+
+<div
+  id="basicStudentList"
+  class="vip-list"
+  style="margin-top:8px;"
+></div>
+
+<div class="vip-input-wrapper" style="margin-top:12px;">
+  <div class="vip-input" style="cursor: default;">
+    复习听写 • Revision
+    <div class="small">⛔ Please revise according to the School’s Progress ⛔</div>
+  </div>
+</div>
+
+<div
+  id="revisionStudentList"
+  class="vip-list"
+  style="margin-top:8px;"
+></div>
+
+  <div class="vip-input-wrapper" style="margin-top:12px;">
+  <div class="vip-input" style="cursor: default;">
+    补习 • Tuition
+    <div class="small"> Do until the latest page taught in School</div>
+    <div class="small"> Primary 1-3, Teach School Materials ( File )</div>
+    <div class="small"> Primary 4-6, Teach School Composition ( Composition Book )</div>
+  </div>
+</div>
+
+<div
+  id="tuitionStudentList"
+  class="vip-list"
+  style="margin-top:8px;"
+></div>
+
+<div class="vip-input-wrapper" style="margin-top:12px;">
+  <div class="vip-input" style="cursor: default;">
+    学校 • School
+  </div>
+</div>
+
+<div
+  id="schoolList"
+  class="vip-list"
+  style="margin-top:8px;"
+></div>
+
+<a href="https://docs.google.com/spreadsheets/d/1iFjpNrvH79hBlIAro6BA-3qY_Yg4DFznIIJA79S6z4A/edit?usp=sharing" target="_blank" class="progress-btn">
+  📊 Progress List
+</a>
+
+    <div class="vip-section">
+      <div class="vip-input-wrapper">
+        <input id="vipInput" class="vip-input" placeholder="VIP学生 • VIP Students"/>
+      </div>
+      <div id="vipList" class="vip-list"></div>
+    </div>
+  </div>
+
+  </div>
+
+  <script>
+    const WS_URL = "wss://moon-realtime-server.onrender.com";
+    let teacherCurrentStudent = {};
+
+// 🔥🔥🔥 加在这里 ↓↓↓↓↓↓↓↓↓
+window.selectionMode = 'single';
+window.currentSelectedStudents = [];
+// 🔥🔥🔥 到这里 ↑↑↑↑↑↑↑↑↑
+    const teacherSelect = document.getElementById('teacherSelect');
+    const roomSelect = document.getElementById('roomSelect');
+    const studentInput = document.getElementById('studentInput');
+    const lastUpdated = document.getElementById('lastUpdated');
+    const body = document.body;
+    const availBtn = document.getElementById('availBtn');
+    const occBtn = document.getElementById('occBtn');
+    const inactiveBtn = document.getElementById('inactiveBtn');
+    const doneBtn = document.getElementById('doneBtn');
+    const lunchBtn = document.getElementById('lunchBtn');
+const homeworkBtn = document.getElementById('homeworkBtn');
+const dictationBtn = document.getElementById('dictationBtn');
+    const vipInput = document.getElementById('vipInput');
+    const vipList = document.getElementById('vipList');
+    const allBtns = [
+  availBtn,
+  occBtn,
+  inactiveBtn,
+  lunchBtn,
+  homeworkBtn,
+  dictationBtn,
+  doneBtn
+];
+
+    let vipStudents = []; // ❗不要从 localStorage 读
+    let ws;
+
+    function connectWS() {
+      ws = new WebSocket(WS_URL);
+      ws.onopen = () => {
+  console.log("WS connected");
+};
+      ws.onmessage = (evt) => {
+  try {
+    const msg = JSON.parse(evt.data);
+
+    if (msg.type === "syncAll") {
+
+      // ✅ 原本你已有（VIP）
+      if (Array.isArray(msg.vipStudents)) {
+        vipStudents = msg.vipStudents;
+        renderVIPs();
+      }
+
+      // ✅ 👉 就加在这里（同一层）
+      if (Array.isArray(msg.teacherStates)) {
+        teacherCurrentStudent = {};
+
+        msg.teacherStates.forEach(t => {
+          if (t.student && t.status !== 'Inactive') {
+            teacherCurrentStudent[t.teacher] = t.student;
+          }
+        });
+
+        renderTeacherStatus();
+      }
+
+      return;
+    }
+
+  } catch (err) {
+    console.error("WS message error:", err);
+  }
+};
+      ws.onclose = () => setTimeout(connectWS, 2000);
+    }
+    connectWS();
+
+    renderTeacherStatus();
+
+    function updateStatus(status, btn) {
+  const teacher = teacherSelect.value;
+  const room = roomSelect.value;
+  const student = studentInput.value || '-';
+  const time = new Date().toLocaleString();
+
+  renderTeacherStatus();
+
+  // 👇 原本代码继续
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ teacher, room, student, status, time }));
+  }
+
+  if (lastUpdated) {
+  lastUpdated.textContent = time;
+}
+  body.style.backgroundColor =
+    status === 'Available' ? '#48bb78' :
+    status === 'Occupied' ? '#f56565' :
+    status === 'Done' ? '#805ad5' :
+    '#1a202c';
+
+  allBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // 写 Firestore
+  if (window.currentTuitionDocId) {
+  updateDoc(
+    doc(db, 'attendance', window.currentTuitionDocId),
+    { 
+      status: status,
+      teacher: teacherSelect.value   // 🔥 就加这一行
+    }
+  );
+}
+  
+  // ✅ 删除整个Done状态的特殊处理，因为在doneBtn.onclick中已经处理了
+}
+
+// ✅ 就放在上面这个 function 结束后（不要放里面）
+function renderSchoolList(list) {
+  const el = document.getElementById('schoolList');
+  if (!el) return;
+
+  el.innerHTML = '';
+
+  // 🔥🔥🔥 在这里加 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+  // 当前所有还在系统里的学生（Homework + Basic + Tuition）
+  const activeNames = new Set();
+
+  // Homework
+  document.querySelectorAll('#studentList .vip-tag').forEach(el => {
+    activeNames.add(el.textContent.trim().replace('✕','').trim());
+  });
+
+  // Basic
+  document.querySelectorAll('#basicStudentList .vip-tag').forEach(el => {
+    activeNames.add(el.textContent.trim().replace('✕','').trim());
+  });
+
+  // Revision
+document.querySelectorAll('#revisionStudentList .vip-tag').forEach(el => {
+  activeNames.add(el.textContent.trim().replace('✕','').trim());
+});
+
+  // Tuition
+  document.querySelectorAll('#tuitionStudentList .vip-tag').forEach(el => {
+    activeNames.add(el.textContent.trim().replace('✕','').trim());
+  });
+
+  // 🔥🔥🔥 到这里 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+  const grouped = {};
+
+  list.forEach(item => {
+  const name = item.name?.trim();
+  if (!name) return;
+
+  // ❌ Writing Homework List → School 隐藏
+  if (item.status === 'Writing Homework List') return;
+
+  // ❌ 不在系统 → 不显示
+  if (!activeNames.has(name)) return;
+
+  const cls = window.studentMap[name] || '未分类';
+
+  if (!grouped[cls]) grouped[cls] = [];
+  grouped[cls].push(name);
+});
+
+  // ✅ 创建 grid 容器
+  const grid = document.createElement('div');
+  grid.className = 'school-grid';
+
+  Object.entries(grouped).forEach(([cls, students]) => {
+
+  // 🔥 就加在这里（第一行）
+  const allReady = students.every(name =>
+    window.currentTuitionNames?.has(name)
+  );
+
+  const card = document.createElement('div');
+
+  // 🔥🔥🔥 就加在这里 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+card.onclick = () => {
+
+  // 🔥🔥🔥 就加在这里（第一行）
+  window.selectionMode = 'multi';
+
+  // ❗清掉单人模式
+  window.currentTuitionDocId = null;
+
+  // ❗清掉所有旧选中
+  document.querySelectorAll('.student-tag').forEach(el => {
+    el.classList.remove('selected');
+  });
+
+  // ✅ 原本你的代码继续 ↓↓↓↓↓↓↓↓↓↓
+
+  const studentsInClass = students.map(name => {
+    return {
+      name,
+      id: window.nameToDocId?.[name]
+    };
+  }).filter(s => s.id);
+
+  // ✅ 保存全部选中
+  window.currentSelectedStudents = studentsInClass;
+
+  // ✅ 显示在 input
+  const names = studentsInClass.map(s => s.name);
+
+  studentInput.value = students.join(', ');
+
+  // ✅ 清掉之前选中
+  document.querySelectorAll('.student-tag').forEach(el => {
+    el.classList.remove('selected');
+  });
+
+  // ✅ 高亮这一班全部学生
+  students.forEach(name => {
+  const el = document.querySelector(
+    `.student-tag[data-name="${name}"]`
+  );
+  if (el) el.classList.add('selected');
+});
+};
+// 🔥🔥🔥 到这里 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+  // 🔥 这里也要改
+  card.className = 'school-card ' + (allReady ? 'ready' : '');
+
+    card.innerHTML = `
+      <div class="school-title">${cls}</div>
+      <div class="school-students">
+        ${students.map(name => {
+  const item = list.find(i => i.name === name);
+
+  let statusClass = '';
+
+  if (item?.status) {
+    statusClass = item.status
+      .toLowerCase()
+      .replace(/[\/\s]+/g, '-');
+  }
+
+  return `
+    <div class="student-tag ${statusClass}"
+     data-name="${name}"
+     onclick="selectStudent('${name}', this)">
+      ${name}
+    </div>
+  `;
+}).join('')}
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  el.appendChild(grid);
+}
+
+// ❗❗一定在外面，不要放进上面 function 里面
+function renderTeacherStatus() {
+  const board = document.getElementById('teacherBoard');
+  board.innerHTML = '';
+
+  const allTeachers = ['low', 'ivy', 'nanas', 'yong', 'jill', 'adam', 'moon'];
+
+  allTeachers.forEach(teacher => {
+    const students = teacherCurrentStudent[teacher] || [];
+
+    const card = document.createElement('div');
+    card.className = 'teacher-card';
+
+    const studentHTML = students.map(s => {
+      const cls =
+        s.status === 'Available' ? 'available' :
+        s.status === 'Occupied' ? 'occupied' :
+        '';
+
+      return `<div class="vip-tag ${cls}">${s.name}</div>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="teacher-title">
+        Teacher ${teacher.charAt(0).toUpperCase() + teacher.slice(1)}
+      </div>
+      <div class="teacher-students">
+        ${studentHTML || '<div class="small">-</div>'}
+      </div>
+    `;
+
+    board.appendChild(card);
+  });
+}
+
+window.updateMultiple = async function(status) {
+  if (!window.currentSelectedStudents?.length && !window.currentTuitionDocId) return;
+
+  const updates = [];
+
+  const payload = {
+    status: status,
+    teacher: teacherSelect.value
+  };
+
+  // 🔥 只有这些状态才要排到最后
+  if (
+    status === 'Done' ||
+    status === 'Having Lunch' ||
+    status === 'Writing Homework List' ||
+    status === 'Read / Copy / Spelling'
+  ) {
+    payload.forceBottomAt = new Date();
+  }
+
+  if (window.selectionMode === 'multi') {
+    window.currentSelectedStudents.forEach(s => {
+      updates.push(
+        updateDoc(doc(db, 'attendance', s.id), payload)
+      );
+    });
+  } else {
+    updates.push(
+      updateDoc(doc(db, 'attendance', window.currentTuitionDocId), payload)
+    );
+  }
+
+  await Promise.all(updates);
+};
+
+function applyImmediateColor(statusClass) {
+
+  // ✅ 批量模式
+  if (window.selectionMode === 'multi') {
+
+    window.currentSelectedStudents.forEach(s => {
+      const elements = document.querySelectorAll(
+        `.student-tag[data-name="${s.name}"]`
+      );
+
+      elements.forEach(el => {
+        el.classList.remove(
+          'available',
+          'occupied',
+          'inactive',
+          'lunch',
+          'homework',
+          'dictation',
+          'done'
+        );
+
+        el.classList.add(statusClass);
+      });
+    });
+
+    return;
+  }
+
+  // ✅ 单人模式（只改 selected）
+  const selected = document.querySelectorAll('.student-tag.selected');
+
+  selected.forEach(el => {
+    el.classList.remove(
+      'available',
+      'occupied',
+      'inactive',
+      'lunch',
+      'homework',
+      'dictation',
+      'done'
+    );
+
+    el.classList.add(statusClass);
+  });
+}
+
+    availBtn.onclick = () => {
+  applyImmediateColor('available');   // 🔥 UI立刻变
+  updateMultiple('Available');        // 🔥 数据更新
+  updateStatus('Available', availBtn);
+};
+
+occBtn.onclick = () => {
+  updateMultiple('Occupied');
+  updateStatus('Occupied', occBtn);
+};
+
+inactiveBtn.onclick = () => {
+  updateMultiple('Inactive');
+  updateStatus('Inactive', inactiveBtn);
+};
+
+    lunchBtn.onclick = () => {
+  updateMultiple('Having Lunch');
+  updateStatus('Having Lunch', lunchBtn);
+};
+
+homeworkBtn.onclick = () => {
+  updateMultiple('Writing Homework List');
+  updateStatus('Writing Homework List', homeworkBtn);
+};
+
+dictationBtn.onclick = () => {
+  updateMultiple('Read / Copy / Spelling');
+  updateStatus('Read / Copy / Spelling', dictationBtn);
+};
+
+   doneBtn.onclick = () => {
+  updateMultiple('Done');
+  updateStatus('Done', doneBtn);
+};
+
+    function renderVIPs() {
+      vipList.innerHTML = '';
+      vipStudents.forEach((name, index) => {
+        const tag = document.createElement('div');
+        tag.className = 'vip-tag';
+        tag.innerHTML = `${name} <button class="vip-remove" data-index="${index}">✕</button>`;
+        tag.onclick = (e) => {
+  if (e.target.classList.contains('vip-remove')) return;
+
+  // ✅ 只在本机显示
+  studentInput.value = name;
+
+  // ❌ 不要 setCurrentStudent（不再同步）
+  // ws.send({ type: "setCurrentStudent" })
+
+  // VIP 逻辑照旧（如果你还要移除）
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({
+      type: "removeVIP",
+      name
+    }));
+  }
+};
+
+        vipList.appendChild(tag);
+      });
+    }
+
+    vipInput.onkeydown = (e) => {
+  if (e.key === 'Enter') {
+    const name = vipInput.value.trim();
+    if (!name) return;
+
+    // 🔒 大小写不敏感检查
+    const exists = vipStudents.some(
+      n => n.toLowerCase() === name.toLowerCase()
+    );
+    if (exists) {
+      vipInput.value = '';
+      return;
+    }
+
+    vipInput.value = '';
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "addVIP",
+        name
+      }));
+    }
+  }
+};
+
+    vipList.onclick = (e) => {
+  if (e.target.classList.contains('vip-remove')) {
+    e.stopPropagation(); // 防止触发点名字逻辑
+
+    const index = parseInt(e.target.dataset.index);
+    const name = vipStudents[index];
+
+    // 🔔 确认提示
+    const ok = confirm(`Confirm Deletion "${name}" `);
+    if (!ok) return;
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "removeVIP",
+        name
+      }));
+    }
+  }
+};
+
+  </script>
+  </div>
+</div>
+
+</body>
+</html>
